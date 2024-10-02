@@ -37,6 +37,8 @@ func (cell *Cell) CreateContainer() {
     b.RightClick = cell.Flag
     b.Importance = widget.LowImportance
 
+    //l := widget.NewLabel(fmt.Sprintf("%d, %d", cell.X, cell.Y))
+
     c := container.NewStack(r, b)
     
     cell.Container = c
@@ -60,33 +62,47 @@ func (cell *Cell) Reveal(direct bool) {
 	cell.Container.Objects[0].(*canvas.Rectangle).FillColor = color.NRGBA{ 255, 0, 0, 200 }
 	cell.game.GameOver = true
 
-	dialog.ShowConfirm(
+	d := dialog.NewInformation(
 	    "Game Over!",
 	    "You exploded :(",
-	    func (_ bool) { cell.game.Restart() },
-	    fyne.CurrentApp().Driver().AllWindows()[0],
+	    defaultWindow(),
 	)
+
+	d.SetDismissText("Restart")
+
+	d.SetOnClosed(func() {
+	    cell.game.Restart()
+	})
+
+	d.Show()
 
 	return
     }
 
+    cell.Container.Objects[0].(*canvas.Rectangle).FillColor = color.Black
+
     if cell.game.Victory() {
 	cell.game.GameOver = true
 
-	dialog.ShowConfirm(
+	d := dialog.NewInformation(
 	    "Game Over!",
 	    "You win :D",
-	    func (_ bool) { cell.game.Restart() },
-	    fyne.CurrentApp().Driver().AllWindows()[0],
+	    defaultWindow(),
 	)
+
+	d.SetDismissText("Restart")
+
+	d.SetOnClosed(func() {
+	    cell.game.Restart()
+	})
+
+	d.Show()
 
 	return
 
     }
     
     mines := cell.SurroundingMines()
-
-    cell.Container.Objects[0].(*canvas.Rectangle).FillColor = color.Black
 
     if mines > 0 {
 	cell.Container.Objects[1].(*Button).SetText(fmt.Sprintf("%d", mines))
@@ -105,10 +121,13 @@ func (cell *Cell) Flag() {
     }
 
     var c color.Color
+    flags, _ := cell.game.Flags.Get()
 
     if cell.Flagged {
+	cell.game.Flags.Set(flags - 1)
 	c = color.NRGBA{ 220, 220, 220, 255 }
     } else {
+	cell.game.Flags.Set(flags + 1)
 	c = color.NRGBA{ 135, 206, 235, 255 }
     }
 

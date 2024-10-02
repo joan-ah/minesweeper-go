@@ -1,22 +1,21 @@
 package main
 
 import (
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
+    "fyne.io/fyne/v2"
+    "fyne.io/fyne/v2/app"
 
-	"minesweeper/game"
-	"minesweeper/ui"
+    "minesweeper/game"
 )
 
 func main() {
     app := app.New()
     window := app.NewWindow("Minesweeper")
-	if icon, err := fyne.LoadResourceFromPath("./bomb.png"); err == nil {
-		window.SetIcon(icon)
-	}
+    if icon, err := fyne.LoadResourceFromPath("./bomb.png"); err == nil {
+	window.SetIcon(icon)
+    }
 
-    game := game.New(10, 10, 15)
+    game := game.New(10, 10, "easy")
 
-    ui.Render(window, &game)
+    game.Render()
     window.ShowAndRun()
 }

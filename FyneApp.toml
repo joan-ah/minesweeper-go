@@ -1,0 +1,6 @@
+[Details]
+  Icon = "bomb.png"
+  Name = "Minesweeper"
+  ID = "github.joan-ah.minesweeper-go"
+  Version = "0.2.0"
+  Build = 2
